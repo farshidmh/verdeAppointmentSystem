@@ -34,6 +34,14 @@ class CustomerRepository implements CustomerRepositoryInterface
         return Customer::all();
     }
 
+    /**
+     * Get Customer by Eamil
+     */
+    public function getCustomerByEmail($email): Customer
+    {
+        return Customer::where('email', $email)->first();
+    }
+
     public function getCustomerAppointmentsByEmail($email)
     {
         //return Customer::where('email', $email)->with('appointments')->first();

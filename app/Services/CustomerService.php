@@ -54,6 +54,24 @@ class CustomerService implements CustomerServiceInterface
     }
 
     /**
+     * Get Customer by Eamil
+     * @throws Exception
+     */
+    public function getCustomerByEmail($email): Customer
+    {
+        $validator = Validator::make(
+            ['email' => $email],
+            ['email' => 'required|string|email|exists:customers'],
+            ['exists' => 'Customer with this email does not exist']
+        );
+
+        if ($validator->fails()) {
+            throw new Exception($validator->errors(), 400);
+        }
+        return $this->customerRepository->getCustomerByEmail($email);
+    }
+
+    /**
      * Get all customers appointments
      * @param $id
      * @return void
