@@ -7,7 +7,9 @@ use App\Repositories\Interfaces\CustomerRepositoryInterface;
 use App\Repositories\Interfaces\AgentRepositoryInterface;
 use App\Repositories\AgentRepository;
 use App\Services\AgentService;
+use App\Services\CustomerService;
 use App\Services\Interfaces\AgentServiceInterface;
+use App\Services\Interfaces\CustomerServiceInterface;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -33,6 +35,11 @@ class AppServiceProvider extends ServiceProvider
          * Bind the CustomerRepositoryInterface to the CustomerRepository
          */
         $this->app->bind(CustomerRepositoryInterface::class, CustomerRepository::class);
+
+        /**
+         * Bind the CustomerServiceInterface to the CustomerService
+         */
+        $this->app->bind(CustomerServiceInterface::class, CustomerService::class);
 
 
     }

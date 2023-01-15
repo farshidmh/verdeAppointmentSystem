@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AgentController;
+use App\Http\Controllers\CustomerController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,6 +27,14 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('logout', 'logout');
         Route::post('refresh', 'refresh');
         Route::get('me', 'getAgent');
+    });
+
+    /** Customer specific API */
+    Route::group(['controller' => CustomerController::class,'prefix' => 'customer'], function () {
+        Route::post('', 'createCustomer');
+        Route::get('/{email}', 'getCustomerAppointmentsByEmail');
+        Route::get('/', 'getAllCustomers');
+
     });
 
 
