@@ -50,12 +50,7 @@ class AppointmentRepository implements AppointmentRepositoryInterface
      */
     public function deleteAppointment($id)
     {
-        $apt = Appointment::find($id);
-        if ($apt) {
-            $apt->delete();
-        } else {
-            throw new Exception('Appointment not found');
-        }
+        Appointment::find($id)->delete();
     }
 
     public function getAppointment($id)

@@ -48,7 +48,7 @@ class AppointmentService implements AppointmentServiceInterface
             ['postal_code' => 'The :attribute must be a valid UK postal code.']
         );
 
-        if($validate->fails()){
+        if ($validate->fails()) {
             throw new Exception($validate->errors());
         }
 
@@ -75,11 +75,18 @@ class AppointmentService implements AppointmentServiceInterface
      */
     public function deleteAppointment($id)
     {
-        try {
-            $this->appointmentRepository->deleteAppointment($id);
-        } catch (Exception $e) {
-            throw new Exception($e->getMessage(), 404);
+        $validate = Validator::make(
+            ['appointment_id' => $id],
+            ['appointment_id' => 'required|integer|exists:appointments,id'],
+            ['exists' => 'Appointment not found']
+        );
+
+        if ($validate->fails()) {
+            throw new Exception($validate->errors());
         }
+
+        $this->appointmentRepository->deleteAppointment($id);
     }
+
 
 }

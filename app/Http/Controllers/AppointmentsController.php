@@ -36,7 +36,7 @@ class AppointmentsController extends Controller
             $this->appointmentService->deleteAppointment($request->id);
             return $this->sendResponse(NULL, 'Appointment deleted successfully.');
         } catch (\Exception $e) {
-            return $this->sendError(null, $e->getMessage(), 404);
+            return $this->sendError(null, json_decode($e->getMessage()), 404);
         }
     }
 
