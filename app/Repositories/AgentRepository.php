@@ -18,7 +18,7 @@ class AgentRepository implements AgentRepositoryInterface
      * @return bool
      * @throws Exception
      */
-    public function login($email, $password): bool
+    public function login($email, $password): string
     {
         return Auth::attempt(['email' => $email, 'password' => $password]);
     }
