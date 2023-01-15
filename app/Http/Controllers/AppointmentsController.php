@@ -21,8 +21,12 @@ class AppointmentsController extends Controller
     public function createOrUpdateAppointment(Request $request)
     {
         try {
-            $this->appointmentService->createOrUpdateAppointment(Auth::user(), $request->customer_email, $request->address, $request->date, $request->time,$request->id);
-            return $this->sendResponse(NULL, 'Appointment created successfully.');
+            $apt = $this->appointmentService->createOrUpdateAppointment(Auth::user(), $request->customer_email, $request->address, $request->date, $request->time, $request->id);
+            if ($request->id) {
+                return $this->sendResponse($apt, 'Appointment updated successfully.');
+            }
+            return $this->sendResponse($apt, 'Appointment created successfully.');
+
         } catch (AgentBusyException|CustomerBusyException $e) {
             return $this->sendError(null, $e->getMessage(), 400);
         } catch (\Exception $e) {

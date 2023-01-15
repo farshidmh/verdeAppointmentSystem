@@ -70,19 +70,16 @@ class AppointmentRepository implements AppointmentRepositoryInterface
         // TODO: Implement getAppointments() method.
     }
 
-    public function createAppointment(Customer $customer, Agent $agent, $address, $date_begin, $date_end)
+    public function createOrUpdateAppointment(Customer $customer, Agent $agent, $address, $date_begin, $date_end, $id): Appointment
     {
-        $agent->appointments()->create([
-            'customer_id' => $customer->id,
-            'address' => $address,
-            'datetime_begin' => $date_begin,
-            'datetime_end' => $date_end,
-            'distance' => 0
-        ]);
-    }
-
-    public function updateAppointment($id, Customer $customer, Agent $agentId, $address, $date, $time, $status)
-    {
-        // TODO: Implement updateAppointment() method.
+        return $agent->appointments()->updateOrCreate(
+            ['id' => $id],
+            [
+                'customer_id' => $customer->id,
+                'address' => $address,
+                'datetime_begin' => $date_begin,
+                'datetime_end' => $date_end,
+                'distance' => 0
+            ]);
     }
 }

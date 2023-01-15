@@ -69,8 +69,7 @@ class AppointmentService implements AppointmentServiceInterface
             throw new CustomerBusyException('Customer is busy at this time', 400);
         }
 
-
-         $this->appointmentRepository->createAppointment($customer, $agent, $address, $date_begin, $date_end);
+        return $this->appointmentRepository->createOrUpdateAppointment($customer, $agent, $address, $date_begin, $date_end, $id);
     }
 
     /**
