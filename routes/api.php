@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AgentController;
+use App\Http\Controllers\AppointmentsController;
 use App\Http\Controllers\CustomerController;
 use Illuminate\Support\Facades\Route;
 
@@ -34,8 +35,15 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('', 'createCustomer');
         Route::get('/{email}', 'getCustomerAppointmentsByEmail');
         Route::get('/', 'getAllCustomers');
+    });
+
+    /** Appointment Specific API */
+    Route::group(['controller' => AppointmentsController::class,'prefix' => 'appointment','middleware' => 'auth:api'], function () {
+        Route::post('', 'createAppointment');
+        Route::delete('', 'deleteAppointment');
 
     });
+
 
 
 });
