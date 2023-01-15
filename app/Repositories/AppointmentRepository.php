@@ -7,13 +7,14 @@ use App\Models\Customer;
 use App\Models\Agent;
 use App\Repositories\Interfaces\AppointmentRepositoryInterface;
 use Exception;
+use Illuminate\Database\Eloquent\Builder;
 
 class AppointmentRepository implements AppointmentRepositoryInterface
 {
 
-    public function checkAppointmentAgentConflictCount($agentId, $date_begin, $date_end): int
+    private function checkAppointmentConflictCount($date_begin, $date_end): Builder
     {
-        $existing = Appointment::where(
+        return Appointment::where(
             function ($query) use ($date_begin, $date_end) {
                 $query->whereBetween('datetime_begin', [$date_begin, $date_end])
                     ->orWhereBetween('datetime_end', [$date_begin, $date_end])
@@ -22,28 +23,34 @@ class AppointmentRepository implements AppointmentRepositoryInterface
                             ->where('datetime_end', '>=', $date_end);
                     });
             }
-        )->where('agent_id', $agentId)
-            ->count();
-
-        return $existing;
+        );
     }
 
-    public function checkAppointmentCustomerConflictCount($customerId, $date_begin, $date_end): int
+    public function checkAppointmentAgentConflictCount($agentId, $date_begin, $date_end, $appointmentId = null): int
     {
-        $existing = Appointment::where(
-            function ($query) use ($date_begin, $date_end) {
-                $query->whereBetween('datetime_begin', [$date_begin, $date_end])
-                    ->orWhereBetween('datetime_end', [$date_begin, $date_end])
-                    ->orWhere(function ($query) use ($date_begin, $date_end) {
-                        $query->where('datetime_begin', '<=', $date_begin)
-                            ->where('datetime_end', '>=', $date_end);
-                    });
-            }
-        )->where('customer_id', $customerId)
-            ->count();
+        $build = $this->checkAppointmentConflictCount($date_begin, $date_end)
+            ->where('agent_id', $agentId);
 
-        return $existing;
+        if ($appointmentId) {
+            $build->where('id', '!=', $appointmentId);
+        }
+
+        return $build->count();
     }
+
+    public function checkAppointmentCustomerConflictCount($customerId, $date_begin, $date_end, $appointmentId = null): int
+    {
+        $build = $this
+            ->checkAppointmentConflictCount($date_begin, $date_end)
+            ->where('customer_id', $customerId);
+
+        if ($appointmentId) {
+            $build->where('id', '!=', $appointmentId);
+        }
+
+        return $build->count();
+    }
+
 
     /**
      * @throws Exception

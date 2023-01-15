@@ -39,7 +39,7 @@ Route::group(['prefix' => 'v1'], function () {
 
     /** Appointment Specific API */
     Route::group(['controller' => AppointmentsController::class,'prefix' => 'appointment','middleware' => 'auth:api'], function () {
-        Route::post('', 'createAppointment');
+        Route::post('', 'createOrUpdateAppointment');
         Route::delete('', 'deleteAppointment');
 
     });

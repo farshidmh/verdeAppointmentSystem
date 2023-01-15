@@ -18,10 +18,10 @@ class AppointmentsController extends Controller
         $this->appointmentService = $appointmentService;
     }
 
-    public function createAppointment(Request $request)
+    public function createOrUpdateAppointment(Request $request)
     {
         try {
-            $this->appointmentService->createAppointment(Auth::user(), $request->customer_email, $request->address, $request->date, $request->time);
+            $this->appointmentService->createOrUpdateAppointment(Auth::user(), $request->customer_email, $request->address, $request->date, $request->time,$request->id);
             return $this->sendResponse(NULL, 'Appointment created successfully.');
         } catch (AgentBusyException|CustomerBusyException $e) {
             return $this->sendError(null, $e->getMessage(), 400);
@@ -29,6 +29,7 @@ class AppointmentsController extends Controller
             return $this->sendError(json_decode($e->getMessage()), null, 404);
         }
     }
+
 
     public function deleteAppointment(Request $request)
     {

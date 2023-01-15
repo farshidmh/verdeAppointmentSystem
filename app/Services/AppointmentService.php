@@ -30,20 +30,22 @@ class AppointmentService implements AppointmentServiceInterface
      * @throws CustomerBusyException
      * @throws Exception
      */
-    public function createAppointment(Agent $agent, $customerEmail, $address, $date, $time)
+    public function createOrUpdateAppointment(Agent $agent, $customerEmail, $address, $date, $time, $id = null)
     {
         $validate = Validator::make(
             [
                 'customer_email' => $customerEmail,
                 'address' => $address,
                 'date' => $date,
-                'time' => $time
+                'time' => $time,
+                'appointment_id' => $id
             ],
             [
                 'customer_email' => 'required|string|email',
                 'address' => 'required|string|postal_code:GB',
                 'date' => 'required|date',
-                'time' => 'required|date_format:H:i'
+                'time' => 'required|date_format:H:i',
+                'appointment_id' => 'nullable|integer|exists:appointments,id'
             ],
             ['postal_code' => 'The :attribute must be a valid UK postal code.']
         );
@@ -57,17 +59,18 @@ class AppointmentService implements AppointmentServiceInterface
         $date_begin = Carbon::parse($date . ' ' . $time);
         $date_end = Carbon::parse($date . ' ' . $time)->addHour();
 
-        $existing = $this->appointmentRepository->checkAppointmentAgentConflictCount($agent->id, $date_begin, $date_end);
+        $existing = $this->appointmentRepository->checkAppointmentAgentConflictCount($agent->id, $date_begin, $date_end, $id);
         if ($existing) {
             throw new AgentBusyException('Agent is busy at this time', 400);
         }
 
-        $existing = $this->appointmentRepository->checkAppointmentCustomerConflictCount($customer->id, $date_begin, $date_end);
+        $existing = $this->appointmentRepository->checkAppointmentCustomerConflictCount($customer->id, $date_begin, $date_end, $id);
         if ($existing) {
             throw new CustomerBusyException('Customer is busy at this time', 400);
         }
 
-        $this->appointmentRepository->createAppointment($customer, $agent, $address, $date_begin, $date_end);
+
+         $this->appointmentRepository->createAppointment($customer, $agent, $address, $date_begin, $date_end);
     }
 
     /**
