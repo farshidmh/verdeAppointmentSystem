@@ -14,8 +14,6 @@ use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
  */
 class Agent extends Authenticatable implements JWTSubject
 {
-    use HasFactory, Notifiable;
-
     /**
      * The attributes that are mass assignable.
      *
