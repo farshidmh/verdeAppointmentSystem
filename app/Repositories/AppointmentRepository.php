@@ -70,7 +70,7 @@ class AppointmentRepository implements AppointmentRepositoryInterface
         // TODO: Implement getAppointments() method.
     }
 
-    public function createOrUpdateAppointment(Customer $customer, Agent $agent, $address, $date_begin, $date_end, $id): Appointment
+    public function createOrUpdateAppointment(Customer $customer, Agent $agent, $address, $date_begin, $date_end, $id, $distance, $timeToLeave): Appointment
     {
         return $agent->appointments()->updateOrCreate(
             ['id' => $id],
@@ -79,7 +79,8 @@ class AppointmentRepository implements AppointmentRepositoryInterface
                 'address' => $address,
                 'datetime_begin' => $date_begin,
                 'datetime_end' => $date_end,
-                'distance' => 0
+                'distance' => $distance,
+                'datetime_to_leave' => $timeToLeave,
             ]);
     }
 }

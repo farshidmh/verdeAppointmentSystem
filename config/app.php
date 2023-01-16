@@ -16,7 +16,7 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
-
+    'default_agent_origin' => env('DEFAULT_AGENT_ORIGIN', 'cm27pj'),
     /*
     |--------------------------------------------------------------------------
     | Application Environment
@@ -41,7 +41,7 @@ return [
     |
     */
 
-    'debug' => (bool) env('APP_DEBUG', false),
+    'debug' => (bool)env('APP_DEBUG', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -195,7 +195,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         Axlon\PostalCodeValidation\ValidationServiceProvider::class,
-
+        GoogleMaps\ServiceProvider\GoogleMapsServiceProvider::class,
 
     ],
 
@@ -212,6 +212,7 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'ExampleClass' => App\Example\ExampleClass::class,
+        'GoogleMaps' => GoogleMaps\Facade\GoogleMapsFacade::class,
     ])->toArray(),
 
 ];

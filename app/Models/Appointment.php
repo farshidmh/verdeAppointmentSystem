@@ -24,6 +24,7 @@ class Appointment extends Model
         'datetime_end',
         'address',
         'distance',
+        'datetime_to_leave',
     ];
 
     /**
@@ -41,8 +42,6 @@ class Appointment extends Model
     {
         return $this->belongsTo(Customer::class);
     }
-
-
 
 
 }

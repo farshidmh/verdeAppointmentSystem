@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Exceptions\AgentBusyException;
 use App\Exceptions\CustomerBusyException;
 use App\Models\Agent;
+use App\Models\Appointment;
 use App\Repositories\AppointmentRepository;
 use App\Repositories\Interfaces\AppointmentRepositoryInterface;
 use App\Services\Interfaces\AppointmentServiceInterface;
@@ -30,7 +31,7 @@ class AppointmentService implements AppointmentServiceInterface
      * @throws CustomerBusyException
      * @throws Exception
      */
-    public function createOrUpdateAppointment(Agent $agent, $customerEmail, $address, $date, $time, $id = null)
+    public function createOrUpdateAppointment(Agent $agent, $customerEmail, $address, $date, $time, $id = null): Appointment
     {
         $validate = Validator::make(
             [
@@ -59,6 +60,23 @@ class AppointmentService implements AppointmentServiceInterface
         $date_begin = Carbon::parse($date . ' ' . $time);
         $date_end = Carbon::parse($date . ' ' . $time)->addHour();
 
+        $distance = null;
+        $timeToLeave = null;
+
+        try {
+            $response = json_decode(\GoogleMaps::load('distancematrix')
+                ->setParam(['origins' => config('app.default_agent_origin')])
+                ->setParam(['destinations' => $address])
+                ->get(), true);
+            if ($response['status']) {
+                $distance = $response['rows'][0]['elements'][0]['distance']['value'];
+                $timeToLeave = $response['rows'][0]['elements'][0]['duration']['value'];
+                $timeToLeave = $date_begin->subSeconds($timeToLeave);
+            }
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+
         $existing = $this->appointmentRepository->checkAppointmentAgentConflictCount($agent->id, $date_begin, $date_end, $id);
         if ($existing) {
             throw new AgentBusyException('Agent is busy at this time', 400);
@@ -69,7 +87,7 @@ class AppointmentService implements AppointmentServiceInterface
             throw new CustomerBusyException('Customer is busy at this time', 400);
         }
 
-        return $this->appointmentRepository->createOrUpdateAppointment($customer, $agent, $address, $date_begin, $date_end, $id);
+        return $this->appointmentRepository->createOrUpdateAppointment($customer, $agent, $address, $date_begin, $date_end, $id, $distance, $timeToLeave);
     }
 
     /**

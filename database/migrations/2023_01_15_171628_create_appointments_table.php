@@ -14,8 +14,9 @@ return new class extends Migration {
             $table->foreignId('customer_id')->constrained('customers');
             $table->dateTime('datetime_begin');
             $table->dateTime('datetime_end');
+            $table->dateTime('datetime_to_leave')->nullable();
             $table->string('address');
-            $table->integer('distance');
+            $table->integer('distance')->nullable();
 
             $table->timestamps();
         });
