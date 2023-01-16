@@ -109,14 +109,26 @@ class AppointmentService implements AppointmentServiceInterface
     }
 
 
-    public function getAppointmentByDate($beginDate,$endDate)
+    /**
+     * @throws Exception
+     */
+    public function getAppointmentByDate($beginDate, $endDate)
     {
-        if(is_null($endDate)){
+        $validate = Validator::make(
+            ['begin_date' => $beginDate, 'end_date' => $endDate],
+            ['begin_date' => 'required|date', 'end_date' => 'nullable|date']
+        );
+
+        if ($validate->fails()) {
+            throw new Exception($validate->errors());
+        }
+
+        if (is_null($endDate)) {
             $endDate = $beginDate;
         }
         $beginDate = Carbon::parse($beginDate)->setHour(0)->setMinute(0)->setSecond(0);
         $endDate = Carbon::parse($endDate)->setHour(23)->setMinute(59)->setSecond(59);
-        return $this->appointmentRepository->getAppointmentByDate($beginDate,$endDate);
+        return $this->appointmentRepository->getAppointmentByDate($beginDate, $endDate);
     }
 
     public function getAppointmentsByAgentID(Agent $agent)

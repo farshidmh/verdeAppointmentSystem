@@ -61,7 +61,7 @@ class AppointmentsController extends Controller
             $appointments = $this->appointmentService->getAppointmentByDate($request->beginDate,$request->endDate);
             return $this->sendResponse($appointments, 'Appointments retrieved successfully.');
         } catch (\Exception $e) {
-            return $this->sendError(null, ($e->getMessage()), 404);
+            return $this->sendError(null,json_decode($e->getMessage()), 404);
         }
 
     }

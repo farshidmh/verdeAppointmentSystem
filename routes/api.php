@@ -42,7 +42,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('', 'createOrUpdateAppointment');
         Route::delete('', 'deleteAppointment');
         Route::get('', 'getAppointmentsByAgentID');
-        Route::get('/{beginDate?}/{endDate?}', 'getAppointmentByDate');
+        Route::get('/{beginDate}/{endDate?}', 'getAppointmentByDate');
 
     });
 
