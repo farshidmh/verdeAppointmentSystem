@@ -1,0 +1,73 @@
+version: '3'
+
+services:
+
+  #-----------------------------------
+  app:
+    image: 'far2005/verde-appointment-system:latest'
+    restart: unless-stopped
+    container_name: verde-app
+    ports:
+      - "8000:80"
+    depends_on:
+      - database
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_CONNECTION=${DB_CONNECTION}
+      - APP_ENV=${APP_ENV}
+      - APP_KEY=${APP_KEY}
+      - APP_DEBUG=${APP_DEBUG}
+      - APP_URL=${APP_URL}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+    networks:
+      - verde-net
+
+  #-----------------------------------
+  database:
+    image: 'mysql:8.0.29'
+    command: --default-authentication-plugin=mysql_native_password
+    container_name: verde-db
+    restart: unless-stopped
+    volumes:
+      - mysql-data:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=${DB_DATABASE}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+      - MYSQL_USER=${DB_USERNAME}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+    networks:
+      - verde-net
+
+  #-----------------------------------
+  phpmyadmin:
+    image: phpmyadmin:5.2.0
+    container_name: verde-phpmyadmin
+    restart: unless-stopped
+    ports:
+      - 8080:80
+    depends_on:
+      - database
+    networks:
+      - verde-net
+    environment:
+      - PMA_HOSTS=${DB_HOST}
+      - PMA_PORTS=${DB_PORT}
+      - PMA_USER=${DB_USERNAME}
+      - PMA_PASSWORD=${DB_PASSWORD}
+
+#-----------------------------------
+networks:
+  verde-net:
+    driver: bridge
+    name: verde-net
+
+volumes:
+  mysql-data:
+    driver: local
+  node_modules_not_used:
+    driver: local
