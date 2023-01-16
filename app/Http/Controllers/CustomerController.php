@@ -21,9 +21,9 @@ class CustomerController extends Controller
     {
         try {
             $newCustomer = $this->customerService->createCustomer($request->name, $request->surname, $request->email, $request->phone, $request->address);
-            return $this->sendResponse($newCustomer, 201);
+            return $this->sendResponse($newCustomer, 'New Customer created',200);
         } catch (\Exception $e) {
-            return $this->sendError(json_decode($e->getMessage()), $e->getCode());
+            return $this->sendError(null,json_decode($e->getMessage()), $e->getCode());
         }
     }
 

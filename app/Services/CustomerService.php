@@ -34,11 +34,12 @@ class CustomerService implements CustomerServiceInterface
     {
         $validator = Validator::make(
             ['name' => $name, 'surname' => $surname, 'email' => $email, 'phone' => $phone, 'address' => $address],
-            ['name' => 'required|string', 'surname' => 'required|string', 'email' => 'required|string|email|unique:customers', 'phone' => 'required|string', 'address' => 'required|string']
+            ['name' => 'required|string', 'surname' => 'required|string', 'email' => 'required|string|email|unique:customers', 'phone' => 'required|string', 'address' => 'required|string'],
+            ['email.unique' => 'Customer already exists']
         );
 
         if ($validator->fails()) {
-            throw new Exception($validator->errors(), 400);
+            throw new Exception($validator->errors(), 401);
         }
 
         return $this->customerRepository->createCustomer($name, $surname, $email, $phone, $address);
