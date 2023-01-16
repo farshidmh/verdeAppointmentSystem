@@ -42,6 +42,13 @@ available on: https://hub.docker.com/r/far2005/verde-appointment-system
 
 - Run `docker-compose up -d`
 
+## Nice to add in the future
+- Calculate the distance between the agent and the customer if agent is leaving from previous appointment
+- Add more tests
+- get list of appointments for a specific customer
+- get list of appointments between a specific agent and customer
+
+
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT).
