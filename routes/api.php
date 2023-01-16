@@ -41,6 +41,8 @@ Route::group(['prefix' => 'v1'], function () {
     Route::group(['controller' => AppointmentsController::class,'prefix' => 'appointment','middleware' => 'auth:api'], function () {
         Route::post('', 'createOrUpdateAppointment');
         Route::delete('', 'deleteAppointment');
+        Route::get('', 'getAppointmentsByAgentID');
+        Route::get('/{beginDate?}/{endDate?}', 'getAppointmentByDate');
 
     });
 

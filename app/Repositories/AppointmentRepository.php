@@ -60,14 +60,10 @@ class AppointmentRepository implements AppointmentRepositoryInterface
         Appointment::find($id)->delete();
     }
 
-    public function getAppointment($id)
-    {
-        // TODO: Implement getAppointment() method.
-    }
 
-    public function getAppointments()
+    public function getAppointmentsByAgentID($agentId)
     {
-        // TODO: Implement getAppointments() method.
+        return Appointment::where('agent_id',$agentId)->get()->sortBy('datetime_begin');
     }
 
     public function createOrUpdateAppointment(Customer $customer, Agent $agent, $address, $date_begin, $date_end, $id, $distance, $timeToLeave): Appointment
@@ -83,4 +79,17 @@ class AppointmentRepository implements AppointmentRepositoryInterface
                 'datetime_to_leave' => $timeToLeave,
             ]);
     }
+
+    public function getAppointmentByDate($beginDate, $endDate)
+    {
+        return Appointment::whereBetween('datetime_begin', [$beginDate, $endDate])
+            ->orWhereBetween('datetime_end', [$beginDate, $endDate])
+            ->orWhere(function ($query) use ($beginDate, $endDate) {
+                $query->where('datetime_begin', '<=', $beginDate)
+                    ->where('datetime_end', '>=', $endDate);
+            })
+            ->get()->sortBy('datetime_begin');
+    }
+
+
 }

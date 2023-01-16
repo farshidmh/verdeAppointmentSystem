@@ -7,11 +7,12 @@ use App\Models\Agent;
 
 interface AppointmentRepositoryInterface
 {
-    public function createOrUpdateAppointment(Customer $customer, Agent $agent, $address, $date, $time,$id, $distance, $timeToLeave);
+    public function createOrUpdateAppointment(Customer $customer, Agent $agent, $address, $date, $time, $id, $distance, $timeToLeave);
 
     public function deleteAppointment($id);
 
-    public function getAppointment($id);
+    public function getAppointmentsByAgentID($agentId);
 
-    public function getAppointments();
+    public function getAppointmentByDate($beginDate,$endDate);
+
 }

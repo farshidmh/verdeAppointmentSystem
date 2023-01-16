@@ -45,4 +45,25 @@ class AppointmentsController extends Controller
         }
     }
 
+    public function getAppointmentsByAgentID()
+    {
+        try {
+            $appointments = $this->appointmentService->getAppointmentsByAgentID(Auth::user());
+            return $this->sendResponse($appointments, 'Appointments retrieved successfully.');
+        } catch (\Exception $e) {
+            return $this->sendError(null, json_decode($e->getMessage()), 404);
+        }
+    }
+
+    public function getAppointmentByDate(Request $request)
+    {
+        try {
+            $appointments = $this->appointmentService->getAppointmentByDate($request->beginDate,$request->endDate);
+            return $this->sendResponse($appointments, 'Appointments retrieved successfully.');
+        } catch (\Exception $e) {
+            return $this->sendError(null, ($e->getMessage()), 404);
+        }
+
+    }
+
 }
